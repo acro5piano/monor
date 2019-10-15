@@ -8,7 +8,6 @@ const Promise = require('bluebird')
 const prompts = require('prompts')
 
 const readFilePromise = util.promisify(fs.readFile)
-const accessPromise = util.promisify(fs.access)
 const globPromise = util.promisify(glob)
 
 function flatten(arr) {
