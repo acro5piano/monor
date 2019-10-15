@@ -41,7 +41,8 @@ async function main() {
         const json = await readJSON(path)
         const choices = Object.keys(json.scripts).map(key => {
           return {
-            title: `${padSpace(json.name)} - ${key} (${json.scripts[key]})`,
+            title: `${padSpace(json.name)} ${key}`,
+            description: `${json.scripts[key]}`,
             value: `yarn workspace ${json.name} ${key}`,
           }
         })
@@ -59,6 +60,9 @@ async function main() {
     choices,
     suggest: suggestByTitle,
   })
+  if (!answer) {
+    return
+  }
   exec(answer, (error, stdout, stderr) => {
     if (error) {
       console.error(`exec error: ${error}`)
