@@ -66,8 +66,8 @@ async function main() {
       console.error(`exec error: ${error}`)
       return
     }
-    console.log(`stdout: ${stdout}`)
-    console.error(`stderr: ${stderr}`)
+    console.log(stdout)
+    console.log(stderr)
   })
 }
 
