@@ -1,0 +1,6 @@
+{
+  "name": "@example/app",
+  "scripts": {
+    "start": "app start"
+  }
+}

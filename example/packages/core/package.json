@@ -1,0 +1,6 @@
+{
+  "name": "@example/core",
+  "scripts": {
+    "start": "core start"
+  }
+}
