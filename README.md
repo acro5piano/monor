@@ -2,6 +2,8 @@
 
 List commands of each yarn workspaces
 
+![image](https://github.com/acro5piano/monor/blob/master/demo.gif)
+
 # Why
 
 Every time I run yarn workspaces commands, I have to type `yarn workspace @myapp/package start`, which is a kind of hard work.
