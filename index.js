@@ -1,7 +1,7 @@
 #!/usr/bin/env node
 
 const fs = require('fs')
-const { exec } = require('child_process')
+const { spawn } = require('child_process')
 const util = require('util')
 const glob = require('glob')
 const Promise = require('bluebird')
@@ -63,13 +63,15 @@ async function main() {
   if (!answer) {
     return
   }
-  exec(answer, (error, stdout, stderr) => {
-    if (error) {
-      console.error(`exec error: ${error}`)
-      return
-    }
-    console.log(stdout)
-    console.log(stderr)
+
+  const [command, ...args] = answer.split(' ')
+  const ps = spawn(command, args)
+
+  ps.stdout.on('data', data => {
+    console.log(String(data).trim())
+  })
+  ps.stderr.on('data', data => {
+    console.log(String(data).trim())
   })
 }
 
