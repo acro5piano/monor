@@ -1,6 +1,17 @@
 {
   "name": "@example/core",
+  "version": "0.0.1",
   "scripts": {
-    "start": "core start"
+    "start": "echo core start",
+    "start-": "echo core start",
+    "start1": "echo core start",
+    "start10": "echo core start",
+    "start11": "echo core start",
+    "start2": "echo core start",
+    "start5": "echo core start",
+    "start6": "echo core start",
+    "start8": "echo core start",
+    "start9": "echo core start",
+    "start-2": "echo core start"
   }
 }

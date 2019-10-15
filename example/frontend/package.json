@@ -1,6 +1,7 @@
 {
   "name": "@example/frontend",
+  "version": "0.0.1",
   "scripts": {
-    "start": "frontend start"
+    "start": "echo frontend start"
   }
 }

@@ -14,7 +14,7 @@
   "dependencies": {
     "bluebird": "^3.7.0",
     "glob": "^7.1.4",
-    "prompts": "^2.2.1"
+    "prompts": "^2.1.0"
   },
   "devDependencies": {
     "prettier": "^1.18.2"

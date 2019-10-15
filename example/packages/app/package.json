@@ -1,6 +1,7 @@
 {
   "name": "@example/app",
+  "version": "0.0.1",
   "scripts": {
-    "start": "app start"
+    "start": "echo app start"
   }
 }

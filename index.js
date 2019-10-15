@@ -23,11 +23,9 @@ function padSpace(value, width = 20) {
   return value + ' '.repeat(width - value.length)
 }
 
-// function getScripts(packageJson) {
-//   return packageJson.scripts
-// }
-const suggestByTitle = (input, choices) =>
-  Promise.resolve(choices.filter(i => i.title.includes(input)))
+const suggestByTitle = (input, choices) => {
+  return Promise.resolve(choices.filter(i => i.title.includes(input)))
+}
 
 async function main() {
   const { workspaces } = await readJSON('package.json')
@@ -43,8 +41,8 @@ async function main() {
         const json = await readJSON(path)
         const choices = Object.keys(json.scripts).map(key => {
           return {
-            title: `${padSpace(json.name)} - ${json.scripts[key]}`,
-            value: json.scripts[key],
+            title: `${padSpace(json.name)} - ${key} (${json.scripts[key]})`,
+            value: `yarn workspace ${json.name} ${key}`,
           }
         })
         return [...car, ...choices]
@@ -57,7 +55,7 @@ async function main() {
   const { answer } = await prompts({
     type: 'autocomplete',
     name: 'answer',
-    message: `Which commands do you want to run`,
+    message: `Which commands do you want to run? (Type to filter)`,
     choices,
     suggest: suggestByTitle,
   })
