@@ -5,7 +5,7 @@ const { spawn } = require('child_process')
 const util = require('util')
 const glob = require('glob')
 const Promise = require('bluebird')
-const prompts = require('prompts')
+const { prompt } = require('enquirer')
 
 const readFilePromise = util.promisify(fs.readFile)
 const globPromise = util.promisify(glob)
@@ -26,7 +26,7 @@ const suggestByTitle = (input, choices) => {
   return Promise.resolve(choices.filter(i => i.title.includes(input)))
 }
 
-async function main() {
+async function run() {
   const { workspaces } = await readJSON('package.json')
   const dirs = await Promise.map(workspaces.packages, workspace => {
     return globPromise(workspace)
@@ -52,18 +52,20 @@ async function main() {
     },
     [],
   )
-  const { answer } = await prompts({
+  const res = await prompt({
     type: 'autocomplete',
     name: 'answer',
     message: `Which commands do you want to run? (Type to filter)`,
     choices,
     suggest: suggestByTitle,
+  }).catch(e => {
+    return
   })
-  if (!answer) {
+  if (!res || !res.answer) {
     return
   }
 
-  const [command, ...args] = answer.split(' ')
+  const [command, ...args] = res.answer.split(' ')
   const ps = spawn(command, args)
 
   ps.stdout.on('data', data => {
@@ -74,4 +76,4 @@ async function main() {
   })
 }
 
-main()
+module.exports.run = run
