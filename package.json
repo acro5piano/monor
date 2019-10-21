@@ -1,6 +1,6 @@
 {
   "name": "monor",
-  "version": "0.0.7",
+  "version": "0.1.0",
   "main": "src/index.js",
   "repository": "git@github.com:acro5piano/monor",
   "author": "gosho-kazuya <ketsume0211@gmail.com>",
