@@ -2,14 +2,14 @@
   "name": "monor",
   "version": "0.0.7",
   "main": "src/index.js",
-  "bin": {
-    "monor": "bin/monor"
-  },
   "repository": "git@github.com:acro5piano/monor",
   "author": "gosho-kazuya <ketsume0211@gmail.com>",
   "license": "MIT",
   "scripts": {
-    "example": "cd example && ../bin/monor"
+    "publish": "node ./node_modules/.bin/pack publish",
+    "clean": "rm -rf dist/*",
+    "build": "pika-pack build",
+    "example": "cd example && ts-node -T ../bin/monor"
   },
   "dependencies": {
     "bluebird": "^3.7.0",
@@ -17,6 +17,33 @@
     "glob": "^7.1.4"
   },
   "devDependencies": {
-    "prettier": "^1.18.2"
+    "@pika/pack": "^0.5.0",
+    "@pika/plugin-build-node": "^0.6.1",
+    "@pika/plugin-simple-bin": "^0.6.1",
+    "@pika/plugin-ts-standard-pkg": "^0.6.1",
+    "@types/bluebird": "^3.5.28",
+    "@types/jest": "^24.0.19",
+    "@types/node": "^12.11.1",
+    "jest": "^24.9.0",
+    "prettier": "^1.18.2",
+    "ts-node": "^8.4.1",
+    "typescript": "^3.6.4"
+  },
+  "@pika/pack": {
+    "pipeline": [
+      [
+        "@pika/plugin-ts-standard-pkg"
+      ],
+      [
+        "@pika/plugin-build-node"
+      ],
+      [
+        "@pika/plugin-simple-bin",
+        {
+          "bin": "monor",
+          "minNodeVersion": 8
+        }
+      ]
+    ]
   }
 }

@@ -1,38 +1,54 @@
-#!/usr/bin/env node
-
-const fs = require('fs')
-const { spawn } = require('child_process')
-const util = require('util')
-const glob = require('glob')
-const Promise = require('bluebird')
+import fs from 'fs'
+import { spawn } from 'child_process'
+import util from 'util'
+import glob from 'glob'
+import Bluebird from 'bluebird'
+// import { prompt } from 'enquirer'
 const { prompt } = require('enquirer')
 
 const readFilePromise = util.promisify(fs.readFile)
 const globPromise = util.promisify(glob)
 
-function flatten(arr) {
-  return arr.reduce((car, cur) => [...car, ...cur], [])
+interface Choice {
+  title: string
+  description: string
+  value: string
 }
 
-async function readJSON(jsonPath) {
+interface PackageJson {
+  name: string
+  workspaces?: {
+    packages: string[]
+  }
+}
+
+function flatten<T>(arr: T[][]) {
+  return arr.reduce((car, cur) => [...car, ...cur], [] as T[])
+}
+
+async function readJSON(jsonPath: string) {
   return JSON.parse(await readFilePromise(`${process.cwd()}/${jsonPath}`, 'utf8'))
 }
 
-function padSpace(value, width = 20) {
+function padSpace(value: string, width = 20) {
   return value + ' '.repeat(width - value.length)
 }
 
-const suggestByTitle = (input, choices) => {
-  return Promise.resolve(choices.filter(i => i.title.includes(input)))
+const suggestByTitle = (input: string, choices: Choice[]) => {
+  return Bluebird.resolve(choices.filter(i => i.title.includes(input)))
 }
 
 async function run() {
-  const { workspaces } = await readJSON('package.json')
-  const dirs = await Promise.map(workspaces.packages, workspace => {
+  const { workspaces }: PackageJson = await readJSON('package.json')
+  if (!workspaces) {
+    console.log('workspaces is not defined')
+    return
+  }
+  const dirs = await Bluebird.map(workspaces.packages, workspace => {
     return globPromise(workspace)
   })
 
-  const choices = await Promise.reduce(
+  const choices = await Bluebird.reduce(
     flatten(dirs),
     async (car, dir) => {
       const path = `${dir}/package.json`
@@ -50,7 +66,7 @@ async function run() {
         return car
       }
     },
-    [],
+    [] as Choice[],
   )
   const res = await prompt({
     type: 'autocomplete',
@@ -58,7 +74,7 @@ async function run() {
     message: `Which commands do you want to run? (Type to filter)`,
     choices,
     suggest: suggestByTitle,
-  }).catch(e => {
+  }).catch((_e: any) => {
     return
   })
   if (!res || !res.answer) {
