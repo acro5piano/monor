@@ -3,6 +3,7 @@ import { spawn } from 'child_process'
 import util from 'util'
 import glob from 'glob'
 import Bluebird from 'bluebird'
+
 // TODO: some type defs not works
 const { prompt } = require('enquirer')
 
@@ -16,7 +17,7 @@ interface Choice {
 }
 
 interface PackageJson {
-  name: string
+  name?: string
   workspaces?: {
     packages: string[]
   }
@@ -34,19 +35,21 @@ function padSpace(value: string, width = 20) {
   return value + ' '.repeat(width - value.length)
 }
 
-const suggestByTitle = (input: string, choices: Choice[]) => {
+function suggestByTitle(input: string, choices: Choice[]) {
   return Bluebird.resolve(choices.filter(i => i.title.includes(input)))
 }
 
 async function run() {
-  const { workspaces }: PackageJson = await readJSON('package.json')
-  if (!workspaces) {
+  const packageJson: PackageJson = await readJSON('package.json')
+  if (!packageJson.workspaces) {
     console.log('workspaces is not defined')
-    return
   }
-  const dirs = await Bluebird.map(workspaces.packages, workspace => {
-    return globPromise(workspace)
-  })
+  const dirs = await Bluebird.map(
+    ['.', ...((packageJson.workspaces && packageJson.workspaces.packages) || [])],
+    workspace => {
+      return globPromise(workspace)
+    },
+  )
 
   const choices = await Bluebird.reduce(
     flatten(dirs),
@@ -55,9 +58,17 @@ async function run() {
       try {
         const json = await readJSON(path)
         const choices = Object.keys(json.scripts).map(key => {
+          const description = `${json.scripts[key]}`
+          if (!json.name) {
+            return {
+              title: `${padSpace('__root__')} ${key}`,
+              description,
+              value: `yarn ${key}`,
+            }
+          }
           return {
-            title: `${padSpace(json.name)} ${key}`,
-            description: `${json.scripts[key]}`,
+            title: `${padSpace(json.name || '__root__')} ${key}`,
+            description,
             value: `yarn workspace ${json.name} ${key}`,
           }
         })
