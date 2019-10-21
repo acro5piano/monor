@@ -46,7 +46,7 @@ async function run() {
           }
         })
         return [...car, ...choices]
-      } catch {
+      } catch (e) {
         return car
       }
     },
