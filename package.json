@@ -7,9 +7,8 @@
   "license": "MIT",
   "scripts": {
     "publish": "node ./node_modules/.bin/pack publish",
-    "clean": "rm -rf dist/*",
     "build": "pika-pack build",
-    "example": "cd example && ts-node -T ../bin/monor"
+    "example": "yarn build && cd example && ../pkg/dist-node/index.bin.js"
   },
   "dependencies": {
     "bluebird": "^3.7.0",
