@@ -27,7 +27,8 @@ jobs:
     steps:
       - checkout
       - yarn-setup
-      - run: yarn example
+      - run: yarn tsc
+      - run: yarn test
 
 workflows:
   version: 2
