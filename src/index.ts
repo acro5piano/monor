@@ -41,9 +41,6 @@ function suggestByTitle(input: string, choices: Choice[]) {
 
 async function run() {
   const packageJson: PackageJson = await readJSON('package.json')
-  if (!packageJson.workspaces) {
-    console.log('workspaces is not defined')
-  }
   const dirs = await Bluebird.map(
     ['.', ...((packageJson.workspaces && packageJson.workspaces.packages) || [])],
     workspace => {
@@ -59,7 +56,7 @@ async function run() {
         const json = await readJSON(path)
         const choices = Object.keys(json.scripts).map(key => {
           const description = `${json.scripts[key]}`
-          if (!json.name) {
+          if (!json.name || path === './package.json') {
             return {
               title: `${padSpace('__root__')} ${key}`,
               description,
@@ -67,7 +64,7 @@ async function run() {
             }
           }
           return {
-            title: `${padSpace(json.name || '__root__')} ${key}`,
+            title: `${padSpace(json.name)} ${key}`,
             description,
             value: `yarn workspace ${json.name} ${key}`,
           }
