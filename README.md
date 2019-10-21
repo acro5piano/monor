@@ -5,7 +5,7 @@
 
 List commands of each yarn workspaces
 
-![image](https://github.com/acro5piano/monor/blob/master/demo.gif)
+![image](https://github.com/acro5piano/monor/blob/master/demo.gif?raw=true)
 
 # Why
 
