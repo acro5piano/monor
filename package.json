@@ -1,15 +1,16 @@
 {
   "name": "monor",
-  "version": "0.1.0",
+  "version": "0.1.3",
   "main": "src/index.js",
   "repository": "git@github.com:acro5piano/monor",
   "author": "gosho-kazuya <ketsume0211@gmail.com>",
   "license": "MIT",
   "scripts": {
-    "publish": "node ./node_modules/.bin/pack publish",
+    "publish": "pika publish",
     "build": "pika-pack build",
     "example": "yarn build && cd example && ../pkg/dist-node/index.bin.js",
-    "test": "yarn build && cd example && echo start:all | ../pkg/dist-node/index.bin.js"
+    "test": "yarn build && cd example && echo start:all | ../pkg/dist-node/index.bin.js",
+    "version": "npm run build"
   },
   "dependencies": {
     "bluebird": "^3.7.0",
