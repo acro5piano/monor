@@ -28,6 +28,7 @@ jobs:
       - checkout
       - yarn-setup
       - run: yarn tsc
+      - run: yarn lint
       - run: yarn test
 
 workflows:

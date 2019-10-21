@@ -1,39 +1,14 @@
-import fs from 'fs'
-import { spawn } from 'child_process'
-import util from 'util'
-import glob from 'glob'
 import Bluebird from 'bluebird'
+import { spawn } from 'child_process'
+import glob from 'glob'
+import util from 'util'
+import { Choice, PackageJson } from './interfaces'
+import { flatten, padSpace, readJSON } from './util'
 
 // TODO: some type defs not works
 const { prompt } = require('enquirer')
 
-const readFilePromise = util.promisify(fs.readFile)
 const globPromise = util.promisify(glob)
-
-interface Choice {
-  title: string
-  description: string
-  value: string
-}
-
-interface PackageJson {
-  name?: string
-  workspaces?: {
-    packages: string[]
-  }
-}
-
-function flatten<T>(arr: T[][]) {
-  return arr.reduce((car, cur) => [...car, ...cur], [] as T[])
-}
-
-async function readJSON(jsonPath: string) {
-  return JSON.parse(await readFilePromise(`${process.cwd()}/${jsonPath}`, 'utf8'))
-}
-
-function padSpace(value: string, width = 20) {
-  return value + ' '.repeat(width - value.length)
-}
 
 function suggestByTitle(input: string, choices: Choice[]) {
   return Bluebird.resolve(choices.filter(i => i.title.includes(input)))
