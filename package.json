@@ -6,7 +6,7 @@
   "author": "gosho-kazuya <ketsume0211@gmail.com>",
   "license": "MIT",
   "scripts": {
-    "publish": "pika publish",
+    "release": "pika publish",
     "build": "pika build",
     "example": "yarn build && cd example && ../pkg/dist-node/index.bin.js",
     "test": "yarn build && cd example && echo start:all | ../pkg/dist-node/index.bin.js",
