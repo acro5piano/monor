@@ -3,7 +3,7 @@ import { spawn } from 'child_process'
 import util from 'util'
 import glob from 'glob'
 import Bluebird from 'bluebird'
-// import { prompt } from 'enquirer'
+// TODO: some type defs not works
 const { prompt } = require('enquirer')
 
 const readFilePromise = util.promisify(fs.readFile)
