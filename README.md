@@ -1,3 +1,6 @@
+[![CircleCI](https://circleci.com/gh/acro5piano/monor.svg?style=svg)](https://circleci.com/gh/acro5piano/monor)
+[![npm version](https://badge.fury.io/js/monor.svg)](https://badge.fury.io/js/monor)
+
 # monor
 
 List commands of each yarn workspaces
@@ -22,4 +25,21 @@ Then just run `monor` to list all of your commands under your workspaces:
 
 ```
 monor
+```
+
+# Features
+
+- Read all `scripts` package.json under yarn workspaces' packages
+- Read roo package.json
+- List and execute a command interactively
+
+# Development Status
+
+Still in Beta. If you have any suggestions or feature requests, feel free to open new issues or Pull Requests!
+
+Please run the following commands after you clone it:
+
+```
+yarn install
+yarn example
 ```
