@@ -10,7 +10,7 @@
   },
   "scripts": {
     "format": "prettier --write src/*.{js,jsx,ts,tsx,md}",
-    "lint:ts": "tslint src/*.{ts,tsx}",
+    "lint": "tslint src/*.{ts,tsx}",
     "prepublish": "tsc",
     "example": "yarn prepublish && cd example && ../bin/monor",
     "test": "yarn prepublish && cd example && echo start:all | ../bin/monor"
