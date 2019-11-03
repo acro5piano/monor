@@ -1,7 +1,6 @@
 export interface Choice {
-  title: string
-  description: string
   value: string
+  title?: string
 }
 
 export interface PackageJson {
