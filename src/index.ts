@@ -1,10 +1,11 @@
 import Bluebird from 'bluebird'
+import chalk from 'chalk'
 import { spawn } from 'child_process'
 import glob from 'glob'
 import util from 'util'
 import { PackageJson } from './interfaces'
 import prompt from './prompt'
-import { flatten, readJSON } from './util'
+import { flatten, padSpace, pickRandomChalkColor, readJSON } from './util'
 
 const globPromise = util.promisify(glob)
 
@@ -47,17 +48,23 @@ async function run() {
     return
   }
 
+  console.log(chalk.bold('Running commands concurrently'))
+
+  commands.forEach(command => {
+    console.log(chalk.gray(`$ ${command}`))
+  })
+
   const codes = await Bluebird.map(commands, command => {
     return new Promise<number>((resolve, reject) => {
       const [cmd, ...args] = command.split(' ')
       const ps = spawn(cmd, args)
-
-      ps.stdout.on('data', data => {
-        console.log(String(data).trim())
-      })
-      ps.stderr.on('data', data => {
-        console.log(String(data).trim())
-      })
+      const colorlize = pickRandomChalkColor()
+      const print = (data: any) => {
+        const prefix = command.replace(/yarn (workspace )?/, '').slice(0, 15)
+        console.log(colorlize(`${padSpace(prefix, 15)} | ${String(data).trim()}`))
+      }
+      ps.stdout.on('data', print)
+      ps.stderr.on('data', print)
       ps.on('exit', code => {
         if (code === null || code > 0) {
           reject(code)
