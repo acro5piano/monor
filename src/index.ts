@@ -3,7 +3,7 @@ import { spawn } from 'child_process'
 import glob from 'glob'
 import util from 'util'
 import filter from './filter'
-import { PackageJson } from './interfaces'
+import { Choice, PackageJson } from './interfaces'
 import { flatten, readJSON } from './util'
 
 // TODO: some type defs not works
@@ -37,7 +37,7 @@ async function run() {
         return car
       }
     },
-    [] as any[],
+    [] as Choice[],
   )
   const res = await prompt({
     type: 'autocomplete',
