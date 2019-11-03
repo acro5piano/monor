@@ -1,5 +1,5 @@
 import { Expect, Setup, Test, TestCase, TestFixture } from 'alsatian'
-import { actions, filterChoices, storeFactory } from './prompt'
+import { actions, filterChoices, getSelectedChoices, storeFactory } from './prompt'
 
 @TestFixture('prompt')
 export class PromptTest {
@@ -32,6 +32,21 @@ export class PromptTest {
     this.store.dispatch(actions.forward())
     this.store.dispatch(actions.forward())
     Expect(this.store.getState().cursorPosition).toEqual(4)
+  }
+
+  @Test()
+  async getSelectedChoices() {
+    this.store.dispatch(actions.setChoices(['a', 'b', 'c']))
+    this.store.dispatch(actions.input('b'))
+    this.store.dispatch(actions.toggleSelected())
+    Expect(getSelectedChoices(this.store.getState())).toEqual(['b'])
+  }
+
+  @Test()
+  async selectOne() {
+    this.store.dispatch(actions.setChoices(['a', 'b', 'c']))
+    this.store.dispatch(actions.input('b'))
+    Expect(getSelectedChoices(this.store.getState())).toEqual(['b'])
   }
 
   @TestCase(

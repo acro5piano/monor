@@ -17,8 +17,16 @@ export function padSpace(value: string, width = 20) {
 }
 
 export function pickRandomChalkColor() {
-  const r = (Math.random() * 100000) / 255
-  const g = (Math.random() * 100000) / 255
-  const b = (Math.random() * 100000) / 255
-  return chalk.rgb(r, g, b)
+  const dice = Math.random()
+  if (dice < 0.2) {
+    return chalk.blue
+  } else if (dice < 0.4) {
+    return chalk.yellow
+  } else if (dice < 0.6) {
+    return chalk.white
+  } else if (dice < 0.8) {
+    return chalk.magenta
+  } else {
+    return chalk.white
+  }
 }

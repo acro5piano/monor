@@ -45,11 +45,20 @@ export const getSelectedChoices = createSelector(
   (state: State) => state.selectedChoiceIndexes,
   (state: State) => state.arrowIndex,
   filterChoices,
-  (choices, indexes, arrowIndex, filteredChoices) => {
-    if (indexes.length === 0) {
+  (choices, indexes) => {
+    return indexes.map(index => choices[index])
+  },
+)
+
+export const getSelectedChoicesOrCurrentArrowItem = createSelector(
+  getSelectedChoices,
+  filterChoices,
+  (state: State) => state.arrowIndex,
+  (selectedChoices, filteredChoices, arrowIndex) => {
+    if (selectedChoices.length === 0) {
       return [filteredChoices[arrowIndex]]
     }
-    return choices.filter((_, index) => indexes.includes(index))
+    return selectedChoices
   },
 )
 
@@ -61,6 +70,7 @@ export const actions = {
   del: actionCreator('DEL'),
   backward: actionCreator('BACKWARD'),
   forward: actionCreator('FORWARD'),
+  killLine: actionCreator('KILL_LINE'),
   toCursorStart: actionCreator('TO_CURSOR_START'),
   toCursorEnd: actionCreator('TO_CURSOR_END'),
   up: actionCreator('UP'),
@@ -68,12 +78,16 @@ export const actions = {
 }
 
 const reducer = reducerWithInitialState(INITIAL_STATE)
-  .case(actions.toggleSelected, state => ({
-    ...state,
-    selectedChoiceIndexes: state.selectedChoiceIndexes.includes(state.arrowIndex)
-      ? state.selectedChoiceIndexes.filter(index => index !== state.arrowIndex)
-      : [...state.selectedChoiceIndexes, state.arrowIndex],
-  }))
+  .case(actions.toggleSelected, state => {
+    const targetChoice = filterChoices(state)[state.arrowIndex]
+    const targetIndex = state.choices.findIndex(choice => choice === targetChoice)
+    return {
+      ...state,
+      selectedChoiceIndexes: state.selectedChoiceIndexes.includes(targetIndex)
+        ? state.selectedChoiceIndexes.filter(index => index !== targetIndex)
+        : [...state.selectedChoiceIndexes, targetIndex],
+    }
+  })
   .case(actions.setChoices, (state, choices) => ({
     ...state,
     choices,
@@ -105,6 +119,10 @@ const reducer = reducerWithInitialState(INITIAL_STATE)
   .case(actions.forward, state => ({
     ...state,
     cursorPosition: Math.min(state.input.length, state.cursorPosition + 1),
+  }))
+  .case(actions.killLine, state => ({
+    ...state,
+    input: state.input.slice(0, state.cursorPosition),
   }))
   .case(actions.backward, state => ({
     ...state,
@@ -158,7 +176,7 @@ async function prompt({ choices, body, message }: PromptProps): Promise<string[]
   const storeDidUpdate = () => {
     const state = store.getState()
     const height = process.stdout.getWindowSize()[1]
-    const { input, cursorPosition, arrowIndex, selectedChoiceIndexes } = state
+    const { input, cursorPosition, arrowIndex } = state
     Array(choices.length + 10)
       .fill(0)
       .map((_, i) => {
@@ -175,10 +193,11 @@ async function prompt({ choices, body, message }: PromptProps): Promise<string[]
       if (index + 4 > height) {
         return
       }
-      const anchor = selectedChoiceIndexes.includes(index) ? '* ' : '  '
+      const selected = getSelectedChoices(state).includes(choice)
+      const anchor = selected ? '* ' : '  '
       if (index === arrowIndex) {
         process.stdout.write(chalk.whiteBright(`${anchor}${choice}\n`))
-      } else if (selectedChoiceIndexes.includes(index)) {
+      } else if (selected) {
         process.stdout.write(chalk.dim(`${anchor}${choice}\n`))
       } else {
         process.stdout.write(chalk.dim(`${anchor}${choice}\n`))
@@ -208,10 +227,14 @@ async function prompt({ choices, body, message }: PromptProps): Promise<string[]
             return store.dispatch(actions.toCursorEnd())
           case 'f':
             return store.dispatch(actions.forward())
+          case 'k':
+            return store.dispatch(actions.killLine())
           case 'n':
             return store.dispatch(actions.down())
           case 'p':
             return store.dispatch(actions.up())
+          default:
+            return
         }
       }
       switch (key.name) {
@@ -230,7 +253,7 @@ async function prompt({ choices, body, message }: PromptProps): Promise<string[]
         case 'return':
           process.stdin.setRawMode(false)
           console.clear()
-          return resolve(getSelectedChoices(store.getState()))
+          return resolve(getSelectedChoicesOrCurrentArrowItem(store.getState()))
         default:
           return store.dispatch(actions.input(key.name || key.sequence))
       }
