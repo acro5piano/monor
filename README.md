@@ -30,8 +30,8 @@ monor
 # Features
 
 - Read all `scripts` package.json under yarn workspaces' packages
-- Read roo package.json
-- List and execute a command interactively
+- List and execute commands interactively
+- Run multiple commands concurrently
 
 # Development Status
 
@@ -42,4 +42,6 @@ Please run the following commands after you clone it:
 ```
 yarn install
 yarn example
+yarn test:unit
+yarn test:e2e
 ```
