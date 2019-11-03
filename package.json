@@ -19,10 +19,16 @@
   "dependencies": {
     "alsatian": "^3.1.0",
     "bluebird": "^3.7.0",
+    "chalk": "^2.4.2",
     "enquirer": "^2.3.2",
+    "fuse.js": "^3.4.5",
     "glob": "^7.1.4",
     "husky": "^3.0.9",
-    "lint-staged": "^9.4.2"
+    "lint-staged": "^9.4.2",
+    "redux": "^4.0.4",
+    "reselect": "^4.0.0",
+    "typescript-fsa": "^3.0.0",
+    "typescript-fsa-reducers": "^1.2.1"
   },
   "devDependencies": {
     "@types/bluebird": "^3.5.28",
