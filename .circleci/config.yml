@@ -29,7 +29,8 @@ jobs:
       - yarn-setup
       - run: yarn tsc
       - run: yarn lint
-      - run: yarn test
+      - run: yarn test:unit
+      - run: yarn test:e2e
 
 workflows:
   version: 2

@@ -13,9 +13,11 @@
     "lint": "tslint src/*.{ts,tsx}",
     "prepublish": "tsc",
     "example": "yarn prepublish && cd example && ../bin/monor",
-    "test": "yarn prepublish && cd example && echo start:all | ../bin/monor"
+    "test:unit": "alsatian src/*.test.ts",
+    "test:e2e": "yarn prepublish && cd example && echo start:all | ../bin/monor"
   },
   "dependencies": {
+    "alsatian": "^3.1.0",
     "bluebird": "^3.7.0",
     "enquirer": "^2.3.2",
     "glob": "^7.1.4",
@@ -25,9 +27,7 @@
   "devDependencies": {
     "@types/bluebird": "^3.5.28",
     "@types/glob": "^7.1.1",
-    "@types/jest": "^24.0.19",
     "@types/node": "^12.11.1",
-    "jest": "^24.9.0",
     "prettier": "^1.18.2",
     "ts-node": "^8.4.1",
     "tslint": "^5.20.0",

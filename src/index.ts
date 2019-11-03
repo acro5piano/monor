@@ -2,17 +2,14 @@ import Bluebird from 'bluebird'
 import { spawn } from 'child_process'
 import glob from 'glob'
 import util from 'util'
-import { Choice, PackageJson } from './interfaces'
-import { flatten, padSpace, readJSON } from './util'
+import filter from './filter'
+import { PackageJson } from './interfaces'
+import { flatten, readJSON } from './util'
 
 // TODO: some type defs not works
 const { prompt } = require('enquirer')
 
 const globPromise = util.promisify(glob)
-
-function suggestByTitle(input: string, choices: Choice[]) {
-  return Bluebird.resolve(choices.filter(i => i.title.includes(input)))
-}
 
 async function run() {
   const packageJson: PackageJson = await readJSON('package.json')
@@ -30,33 +27,24 @@ async function run() {
       try {
         const json = await readJSON(path)
         const choices = Object.keys(json.scripts).map(key => {
-          const description = `${json.scripts[key]}`
           if (!json.name || path === './package.json') {
-            return {
-              title: `${padSpace('__root__')} ${key}`,
-              description,
-              value: `yarn ${key}`,
-            }
+            return { value: `yarn ${key}` }
           }
-          return {
-            title: `${padSpace(json.name)} ${key}`,
-            description,
-            value: `yarn workspace ${json.name} ${key}`,
-          }
+          return { value: `yarn workspace ${json.name} ${key}` }
         })
         return [...car, ...choices]
       } catch (e) {
         return car
       }
     },
-    [] as Choice[],
+    [] as any[],
   )
   const res = await prompt({
     type: 'autocomplete',
     name: 'answer',
     message: `Which commands do you want to run? (Type to filter)`,
-    choices,
-    suggest: suggestByTitle,
+    choices: choices.sort(),
+    suggest: filter,
   }).catch((_e: any) => {
     return
   })
