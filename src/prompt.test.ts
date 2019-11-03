@@ -1,5 +1,11 @@
 import { Expect, Setup, Test, TestCase, TestFixture } from 'alsatian'
-import { actions, filterChoices, getSelectedChoices, storeFactory } from './prompt'
+import {
+  actions,
+  filterChoices,
+  getSelectedChoices,
+  getSelectedChoicesOrCurrentArrowItem,
+  storeFactory,
+} from './prompt'
 
 @TestFixture('prompt')
 export class PromptTest {
@@ -46,7 +52,8 @@ export class PromptTest {
   async selectOne() {
     this.store.dispatch(actions.setChoices(['a', 'b', 'c']))
     this.store.dispatch(actions.input('b'))
-    Expect(getSelectedChoices(this.store.getState())).toEqual(['b'])
+    Expect(getSelectedChoices(this.store.getState())).toEqual([])
+    Expect(getSelectedChoicesOrCurrentArrowItem(this.store.getState())).toEqual(['b'])
   }
 
   @TestCase(
