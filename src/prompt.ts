@@ -157,6 +157,7 @@ async function prompt({ choices, body, message }: PromptProps): Promise<string[]
 
   const storeDidUpdate = () => {
     const state = store.getState()
+    const height = process.stdout.getWindowSize()[1]
     const { input, cursorPosition, arrowIndex, selectedChoiceIndexes } = state
     Array(choices.length + 10)
       .fill(0)
@@ -171,6 +172,9 @@ async function prompt({ choices, body, message }: PromptProps): Promise<string[]
     process.stdout.write(`${input}\n`)
     readline.cursorTo(process.stdout, 0, 4)
     filterChoices(state).forEach((choice, index) => {
+      if (index + 4 > height) {
+        return
+      }
       const anchor = selectedChoiceIndexes.includes(index) ? '* ' : '  '
       if (index === arrowIndex) {
         process.stdout.write(chalk.whiteBright(`${anchor}${choice}\n`))
