@@ -37,27 +37,38 @@ async function run() {
     [] as string[],
   )
 
-  const res = await prompt({
-    message: `Which commands do you want to run? (Type to filter)`,
+  const commands = await prompt({
+    message: 'Which commands do you want to run?',
+    body: 'Type to filter, Press space to select, Return to run',
     choices: choices.sort(),
   })
 
-  if (res.length === 0) {
+  if (commands.length === 0) {
     return
   }
 
-  const [command, ...args] = res.split(' ')
-  const ps = spawn(command, args)
+  const codes = await Bluebird.map(commands, command => {
+    return new Promise<number>((resolve, reject) => {
+      const [cmd, ...args] = command.split(' ')
+      const ps = spawn(cmd, args)
 
-  ps.stdout.on('data', data => {
-    console.log(String(data).trim())
+      ps.stdout.on('data', data => {
+        console.log(String(data).trim())
+      })
+      ps.stderr.on('data', data => {
+        console.log(String(data).trim())
+      })
+      ps.on('exit', code => {
+        if (code === null || code > 0) {
+          reject(code)
+        } else {
+          resolve(code)
+        }
+      })
+    })
   })
-  ps.stderr.on('data', data => {
-    console.log(String(data).trim())
-  })
-  ps.on('exit', code => {
-    process.exit(code || 0)
-  })
+
+  process.exit(codes.every(c => c > 0) ? 1 : 0)
 }
 
 module.exports.run = run
