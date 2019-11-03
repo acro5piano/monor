@@ -1,6 +1,6 @@
 {
   "name": "monor",
-  "version": "0.2.0",
+  "version": "0.2.1",
   "main": "src/index.js",
   "repository": "git@github.com:acro5piano/monor",
   "author": "gosho-kazuya <ketsume0211@gmail.com>",
@@ -17,14 +17,10 @@
     "test:e2e": "yarn prepublish && cd example && echo start:all | ../bin/monor"
   },
   "dependencies": {
-    "alsatian": "^3.1.0",
     "bluebird": "^3.7.0",
     "chalk": "^2.4.2",
-    "enquirer": "^2.3.2",
     "fuse.js": "^3.4.5",
     "glob": "^7.1.4",
-    "husky": "^3.0.9",
-    "lint-staged": "^9.4.2",
     "redux": "^4.0.4",
     "reselect": "^4.0.0",
     "typescript-fsa": "^3.0.0",
@@ -34,6 +30,9 @@
     "@types/bluebird": "^3.5.28",
     "@types/glob": "^7.1.1",
     "@types/node": "^12.11.1",
+    "alsatian": "^3.1.0",
+    "husky": "^3.0.9",
+    "lint-staged": "^9.4.2",
     "prettier": "^1.18.2",
     "ts-node": "^8.4.1",
     "tslint": "^5.20.0",
